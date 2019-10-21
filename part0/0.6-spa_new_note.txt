@@ -1,0 +1,8 @@
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+note over browser:
+some JavaScript code/event handler gets execute which prevents
+the form from redirecting, and it parse the new note to
+JSON format to send to the server and then render the
+new note to the DOM without refreshing/redirecting.
+end note
