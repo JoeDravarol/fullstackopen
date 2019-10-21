@@ -1,0 +1,28 @@
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
+
+note over server:
+server responds with HTTP status code 302
+that asks the browser to redirect/do a HTTP GET 
+request to defined in the header's location
+end note
+
+server-->browser: Redirect to https://fullstack-exampleapp.herokuapp.com/notes
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+server-->browser: HTML-code
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+server-->browser: main.js
+
+note over browser:
+browser starts executing main.js code
+which then request JSON data from server
+end note
+
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+server-->browser: JSON Data
+
+note over browser:
+after the browser receive the JSON 
+data, it render the notes to DOM.
+end note
