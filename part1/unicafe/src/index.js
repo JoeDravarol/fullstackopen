@@ -5,7 +5,12 @@ const Header = ({ text }) => <h1>{text}</h1>
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
 
-const Statistic = ({ text, value }) => <p>{text} {value}</p>
+const Statistic = ({ text, value }) => (
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
+)
 
 const Statistics = ({ good, neutral, bad }) => {
   const sumAll = good + neutral + bad
@@ -14,21 +19,25 @@ const Statistics = ({ good, neutral, bad }) => {
 
   if (good || neutral || bad) {
     return (
-      <div>
-        <Statistic text='good' value={good} />
-        <Statistic text='neutral' value={neutral} />
-        <Statistic text='bad' value={bad} />
-        <Statistic text='all' value={sumAll} />
-        <Statistic text='average' value={sumAverage} />
-        <Statistic text='positive' value={sumPositive + ' %'} />
-      </div>
+      <table>
+        <tbody>
+          <Statistic text='good' value={good} />
+          <Statistic text='neutral' value={neutral} />
+          <Statistic text='bad' value={bad} />
+          <Statistic text='all' value={sumAll} />
+          <Statistic text='average' value={sumAverage} />
+          <Statistic text='positive' value={sumPositive + ' %'} />
+        </tbody>
+      </table>
     )
   }
 
   return (
-    <div>
-      <Statistic text='No feedback given' />
-    </div>
+    <table>
+      <tbody>
+        <Statistic text='No feedback given' />
+      </tbody>
+    </table>
   )
 }
 
