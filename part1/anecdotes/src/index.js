@@ -3,10 +3,18 @@ import ReactDOM from 'react-dom'
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
 
+const Anecdote = ({ header, anecdote }) => (
+  <>
+    <h1>{header}</h1>
+    <p>{anecdote}</p>
+  </>
+)
+
 const App = ({ anecdotes }) => {
   const [selected, setSelected] = useState(0)
   // Create zero filled array into useState
   const [points, setAll] = useState(new Array(anecdotes.length).fill(0))
+  const [mostVotes, setMostVotes] = useState(0)
 
   const sampleAnecdote = () => {
     const sample = Math.floor(Math.random() * anecdotes.length)
@@ -20,14 +28,32 @@ const App = ({ anecdotes }) => {
     copy[selected] += 1
 
     setAll(copy)
+
+    return copy
+  }
+
+  const updateMostVotes = () => {
+    const newPoints = setPoints()
+
+    let max = 0
+
+    newPoints.forEach((point, i) => {
+      if (max < point) {
+        
+        max = point
+        setMostVotes(i)
+      }
+    })
   }
 
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
+      <Anecdote header='Anecdote of the day' anecdote={anecdotes[selected]} />
       <p>has {points[selected]} votes</p>
-      <Button onClick={setPoints} text='vote' />
+      <Button onClick={updateMostVotes} text='vote' />
       <Button onClick={sampleAnecdote} text='random anecdote' />
+      <Anecdote header='Anecdote with most votes' anecdote={anecdotes[mostVotes]} />
+      <p>has {points[mostVotes]} votes</p>
     </div>
   )
 }
