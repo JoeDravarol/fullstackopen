@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Button = ({ onClick, text }) => (
-  <div>
-    <button onClick={onClick}>{text}</button>
-  </div>
-)
+const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
 
 const App = ({ anecdotes }) => {
   const [selected, setSelected] = useState(0)
+  // Create zero filled array into useState
+  const [points, setAll] = useState(new Array(anecdotes.length).fill(0))
 
   const sampleAnecdote = () => {
     const sample = Math.floor(Math.random() * anecdotes.length)
@@ -16,9 +14,19 @@ const App = ({ anecdotes }) => {
     setSelected(sample)
   }
 
+  const setPoints = () => {
+    const copy = [...points]
+
+    copy[selected] += 1
+
+    setAll(copy)
+  }
+
   return (
     <div>
-      {anecdotes[selected]}
+      <p>{anecdotes[selected]}</p>
+      <p>has {points[selected]} votes</p>
+      <Button onClick={setPoints} text='vote' />
       <Button onClick={sampleAnecdote} text='random anecdote' />
     </div>
   )
