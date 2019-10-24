@@ -7,12 +7,14 @@ const Part = ({ name, exercise }) => <li>{name} {exercise}</li>
 
 const Content = ({ course }) => {
   const parts = course.parts.map(part => <Part key={part.id} name={part.name} exercise={part.exercises} />)
+  const totalExercises = course.parts.reduce( (sum, part) => sum + part.exercises, 0 )
 
   return (
     <>
       <ul>
         {parts}
       </ul>
+      <strong><p>total of {totalExercises} exercises</p></strong>
     </>
   )
 }
@@ -44,6 +46,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
