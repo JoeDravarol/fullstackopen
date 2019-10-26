@@ -16,7 +16,7 @@ const Country = ({ country }) => {
   )
 }
 
-const Countries = ({ filterCountries }) => {
+const Countries = ({ filterCountries, setFilter }) => {
 
   if (filterCountries.length > 10) {
     return <p>Too many matches, specify another filter</p>
@@ -24,7 +24,7 @@ const Countries = ({ filterCountries }) => {
   } else if (filterCountries.length > 1) {
     return filterCountries.map(country => (
       <div>
-        <p>{country.name}</p>
+        <p>{country.name} <button onClick={() => setFilter(country.name)}>show</button></p>
       </div>
     ))
   }
@@ -60,7 +60,7 @@ const App = () => {
 
   const displayCountries = () => {
     if (filter !== '') {
-      return <Countries filterCountries={filterCountries()} />
+      return <Countries filterCountries={filterCountries()} setFilter={setFilter} />
     }
   }
 
