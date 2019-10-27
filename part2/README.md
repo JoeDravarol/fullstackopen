@@ -1,1 +1,1 @@
-# Part 2: Introduction to React continued
+# Part 2: Communicating with server
