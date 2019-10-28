@@ -1,6 +1,10 @@
 import React from 'react'
 
-const Persons = ({ persons, showPerson }) => {
+const Button = ({ person, removePerson }) => {
+  return <button onClick={() => removePerson(person)}>delete</button>
+}
+
+const Persons = ({ persons, showPerson, removePerson }) => {
 
   const personsToShow = () => {
     if (showPerson !== '') {
@@ -17,7 +21,9 @@ const Persons = ({ persons, showPerson }) => {
     return persons
   }
 
-  const listPersons = personsToShow().map(person => <li key={person.name}>{person.name} {person.number}</li>)
+
+
+  const listPersons = personsToShow().map(person => <li key={person.name}>{person.name} {person.number} <Button person={person} removePerson={() => removePerson(person)} /></li>)
 
   return (
     <ul>

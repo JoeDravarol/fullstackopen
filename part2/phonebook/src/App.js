@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
+import axios from 'axios'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -46,6 +47,22 @@ const App = () => {
     setNewNumber('')
   }
 
+  const removePerson = person => {
+    const isConfirm = window.confirm(`Delete ${person.name}?`);
+
+    if (isConfirm) {
+      personService
+        .remove(person.id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== person.id))
+        })
+        .catch(error => {
+          alert(`${person.name} was already deleted from server`)
+          setPersons(persons.filter(p => p.id !== person.id))
+        })
+    }
+  }
+
   const handleNameChange = (event) => setNewName(event.target.value)
 
   const handleNumberChange = (event) => setNewNumber(event.target.value)
@@ -74,7 +91,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons persons={persons} showPerson={showPerson} />
+      <Persons persons={persons} showPerson={showPerson} removePerson={removePerson} />
     </div>
   )
 }
