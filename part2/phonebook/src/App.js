@@ -66,6 +66,18 @@ const App = () => {
           }, 5000)
           setPersons(persons.map(p => p.name !== person.name ? p : returnedPerson))
         })
+        .catch(error => {
+          setNotification(
+            {
+              message: `Information of ${person.name} has already been removed from server`,
+              styles: 'error'
+            }
+          )
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+          setPersons(persons.filter(p => p.name !== person.name))
+        })
     }
   }
 
