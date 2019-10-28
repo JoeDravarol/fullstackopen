@@ -3,7 +3,6 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
-import axios from 'axios'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -32,19 +31,20 @@ const App = () => {
       })
   }
 
-  const handleSubmission = (event) => {
-    event.preventDefault()
+  const updateNumber = () => {
+    const person = persons.find(p => p.name === newName)
+    const isConfirm = window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)
 
-    const doesNameExist = persons.find(person => person.name === newName) ? true : false;
+    if (isConfirm) {
 
-    if (doesNameExist) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
-      addPerson()
+      const changedNumber = { ...person, number: newNumber }
+
+      personService
+        .update(person.id, changedNumber)
+        .then(returnedPerson => {
+          setPersons(persons.map(p => p.name !== person.name ? p : returnedPerson))
+        })
     }
-
-    setNewName('')
-    setNewNumber('')
   }
 
   const removePerson = person => {
@@ -61,6 +61,21 @@ const App = () => {
           setPersons(persons.filter(p => p.id !== person.id))
         })
     }
+  }
+
+  const handleSubmission = (event) => {
+    event.preventDefault()
+
+    const doesNameExist = persons.find(person => person.name === newName) ? true : false;
+
+    if (doesNameExist) {
+      updateNumber()
+    } else {
+      addPerson()
+    }
+
+    setNewName('')
+    setNewNumber('')
   }
 
   const handleNameChange = (event) => setNewName(event.target.value)

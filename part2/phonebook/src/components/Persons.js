@@ -21,8 +21,6 @@ const Persons = ({ persons, showPerson, removePerson }) => {
     return persons
   }
 
-
-
   const listPersons = personsToShow().map(person => <li key={person.name}>{person.name} {person.number} <Button person={person} removePerson={() => removePerson(person)} /></li>)
 
   return (
