@@ -42,6 +42,17 @@ const App = () => {
         }, 5000)
         setPersons(persons.concat(returnedPerson))
       })
+      .catch(error => {
+        setNotification(
+          {
+            message: error.response.data.error,
+            styles: 'error'
+          }
+        )
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      })
   }
 
   const updateNumber = () => {
