@@ -1,0 +1,9 @@
+post http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Tasty treats around the world",
+  "author": "Mary Jane",
+  "url": "https://tastytreats.wordpress.com/",
+  "likes": 300
+}
