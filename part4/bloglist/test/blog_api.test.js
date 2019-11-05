@@ -20,6 +20,13 @@ test('all blogs are returned', async () => {
   expect(response.body.length).toBe(helper.initialBlogs.length)
 })
 
+test('blog post unique identifier should be named id', async () => {
+  const blogsAtEnd = await helper.blogsInDb()
+  const blogToView = blogsAtEnd[0]
+
+  expect(blogToView.id).toBeDefined()
+})
+
 afterAll(() => {
   mongoose.connection.close()
 }) 
