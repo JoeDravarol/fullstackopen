@@ -8,7 +8,9 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response, next) => {
-  const blog = new Blog(request.body)
+  const blog = request.body.hasOwnProperty('likes')
+    ? new Blog(request.body)
+    : new Blog({ ...request.body, likes: 0 })
 
   try {
     const savedBlog = await blog.save()
