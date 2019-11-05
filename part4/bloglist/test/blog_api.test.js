@@ -54,7 +54,7 @@ test('a blog with likes property missing, should default to 0', async () => {
   const newBlog = {
     title: 'Testing likes property',
     author: 'Mii',
-    url: 'https://testingblog.com'
+    url: 'https://testingblog.com',
   }
 
   await api
@@ -67,6 +67,22 @@ test('a blog with likes property missing, should default to 0', async () => {
   const blogToView = blogsAtEnd.find(blog => blog.title === 'Testing likes property')
 
   expect(blogToView.likes).toBe(0)
+})
+
+test('blog without title and url is not added', async () => {
+  const newBlog = {
+    author: 'Mii',
+    likes: 0
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
 })
 
 afterAll(() => {

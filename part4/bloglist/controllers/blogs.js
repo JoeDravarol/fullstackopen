@@ -10,11 +10,15 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', async (request, response, next) => {
   const blog = request.body.hasOwnProperty('likes')
     ? new Blog(request.body)
-    : new Blog({ ...request.body, likes: 0 })
+    : new Blog({ ...request.body, likes: 0 });
 
   try {
-    const savedBlog = await blog.save()
-    response.status(201).json(savedBlog)
+    if (request.body.hasOwnProperty('title') && request.body.hasOwnProperty('url')) {
+      const savedBlog = await blog.save()
+      response.status(201).json(savedBlog)
+    } else {
+      response.status(400).end()
+    }
   }
   catch (exception) {
     next(exception)
