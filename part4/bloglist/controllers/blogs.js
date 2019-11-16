@@ -15,7 +15,7 @@ blogsRouter.post('/', async (request, response, next) => {
   try {
     if (request.body.hasOwnProperty('title') && request.body.hasOwnProperty('url')) {
       const savedBlog = await blog.save()
-      response.status(201).json(savedBlog)
+      response.status(201).json(savedBlog.toJSON())
     } else {
       response.status(400).end()
     }
