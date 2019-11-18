@@ -1,5 +1,6 @@
 post http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNWRjZjQ4NjBiYWJhZTUxOTBkMGZlNjE0IiwiaWF0IjoxNTc0MTA2NzYyfQ.azCF_fIJtgWZsFicnTROn2fOa18RMpnuMYrYZsDVSu0
 
 {
   "title": "Tasty treats around the world",
