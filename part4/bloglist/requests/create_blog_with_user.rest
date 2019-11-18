@@ -1,0 +1,10 @@
+post http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "My first blog",
+  "author": "lolhgg",
+  "url": "https://jager.wordpress.com/",
+  "likes": 0,
+  "userId": "5dcf475574ad38179760cc5f"
+}
