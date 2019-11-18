@@ -3,9 +3,9 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNWRjZjQ4NjBiYWJhZTUxOTBkMGZlNjE0IiwiaWF0IjoxNTc0MTA5NTYzfQ.x5JJM-HbZrO-YQ2yiQ6h02eNtuhZyaHdzXkHr2CkEHE
 
 {
-  "title": "My first blog",
+  "title": "Testing Authorization",
   "author": "Hellas",
-  "url": "https://jager.wordpress.com/",
+  "url": "ohmygawds.com",
   "likes": 0,
-  "userId": "5dcf475574ad38179760cc5f"
+  "user": "5dcf4860babae5190d0fe614"
 }
