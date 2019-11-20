@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog'
 import loginService from './services/login'
 import blogsService from './services/blogs'
@@ -9,6 +9,22 @@ function App() {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+
+      setUser(user)
+      getUserBlogs()
+    }
+  }, [])
+
+  const getUserBlogs = async () => {
+    const userBlogs = await blogsService.getAll()
+
+    setBlogs(userBlogs)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -17,15 +33,22 @@ function App() {
         username, password,
       })
 
-      const userBlogs = await blogsService.getAll()
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
 
       setUser(user)
-      setBlogs(userBlogs)
+      getUserBlogs()
       setUsername('')
       setPassword('')
     } catch (exception) {
       console.log(exception)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
   }
 
   if (user === null) {
@@ -60,6 +83,7 @@ function App() {
     <div>
       <h2>blogs</h2>
       <p>{user.name} logged in</p>
+      <button type="submit" onClick={handleLogout} >Logout</button>
 
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
