@@ -3,7 +3,7 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNWRjZjQ4NjBiYWJhZTUxOTBkMGZlNjE0IiwiaWF0IjoxNTc0MTA5NTYzfQ.x5JJM-HbZrO-YQ2yiQ6h02eNtuhZyaHdzXkHr2CkEHE
 
 {
-  "title": "Testing Authorization",
+  "title": "Tfdsthorization",
   "author": "Hellas",
   "url": "ohmygawds.com",
   "likes": 0,

@@ -18,10 +18,6 @@ blogsRouter.get('/:id', async (request, response, next) => {
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
 
-  const blog = body.hasOwnProperty('likes')
-    ? new Blog(body)
-    : new Blog({ ...body, likes: 0 });
-
   try {
     const token = request.token
     const decodedToken = jwt.verify(token, process.env.SECRET)
@@ -31,6 +27,12 @@ blogsRouter.post('/', async (request, response, next) => {
     }
 
     const user = await User.findById(decodedToken.id)
+
+    const blog = body.hasOwnProperty('likes')
+      ? new Blog({ ...body, user: user.id })
+      : new Blog({ ...body, likes: 0, user: user.id });
+
+    console.log(blog)
 
     if (request.body.hasOwnProperty('title') && request.body.hasOwnProperty('url')) {
       const savedBlog = await blog.save()
