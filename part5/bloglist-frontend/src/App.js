@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import Form from './components/Form'
 import loginService from './services/login'
 import blogsService from './services/blogs'
+import Notification from './components/Notification'
 
 function App() {
   const [username, setUsername] = useState('')
@@ -13,6 +14,7 @@ function App() {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -43,6 +45,11 @@ function App() {
         'loggedBlogappUser', JSON.stringify(user)
       )
 
+      setNotification('Login sucessful')
+      setTimeout(() => {
+        setNotification(null)
+      }, 3000)
+
       setUser(user)
       blogsService.setToken(user.token)
       getUserBlogs()
@@ -50,6 +57,11 @@ function App() {
       setPassword('')
     } catch (exception) {
       console.log(exception)
+
+      setNotification('Wrong username or password')
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     }
   }
 
@@ -61,18 +73,33 @@ function App() {
   const addBlog = async (event) => {
     event.preventDefault()
 
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url
+    try {
+      const blogObject = {
+        title: title,
+        author: author,
+        url: url
+      }
+
+      const returnedBlog = await blogsService.create(blogObject)
+
+      setBlogs(blogs.concat(returnedBlog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+
+      setNotification(`A new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    } catch (exception) {
+      console.log(exception)
+
+      setNotification('Something went wrong')
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     }
 
-    const returnedBlog = await blogsService.create(blogObject)
-
-    setBlogs(blogs.concat(returnedBlog))
-    setTitle('')
-    setAuthor('')
-    setUrl('')
   }
 
   const handleTitleChange = event => setTitle(event.target.value)
@@ -85,6 +112,9 @@ function App() {
     return (
       <div>
         <h2>Log in to application</h2>
+
+        <Notification message={notification} />
+
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -112,6 +142,9 @@ function App() {
   return (
     <div>
       <h2>blogs</h2>
+
+      <Notification message={notification} />
+
       <p>{user.name} logged in</p>
       <button type="submit" onClick={handleLogout} >Logout</button>
 
