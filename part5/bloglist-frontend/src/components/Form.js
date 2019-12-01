@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Form = ({ addBlog, title, author, url }) => {
-
+ 
   return (
     <form onSubmit={addBlog}>
       <div>
@@ -13,7 +13,6 @@ const Form = ({ addBlog, title, author, url }) => {
           onChange={title.onChange}
         />
       </div>
-
       <div>
         author:
         <input
