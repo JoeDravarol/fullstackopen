@@ -132,6 +132,28 @@ function App() {
     }
   }
 
+  const handleIncrementBlogLikes = async (blog) => {
+
+    try {
+      const { user, likes, author, title, url } = blog
+
+      const newBlog = {
+        user: user.id,
+        likes: likes + 1,
+        author,
+        title,
+        url
+      }
+
+      const returnedBlog = await blogsService.updateLikes(blog.id, newBlog)
+
+      setBlogs(blogs.map(b => b.id !== returnedBlog.id ? b : returnedBlog))
+    } catch (exception) {
+      console.log(exception)
+      // Set notification
+    }
+  }
+
   if (user === null) {
     return (
       <div>
@@ -175,7 +197,7 @@ function App() {
       {blogForm()}
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} incremetLikes={() => handleIncrementBlogLikes(blog)} />
       )}
     </div>
   );

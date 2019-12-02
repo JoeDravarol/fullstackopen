@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
  
-const Blog = ({ blog }) => {
+const Blog = ({ blog, incremetLikes }) => {
   const [visible, setVisible] = useState(false)
   const showWhenVisible = { display: visible ? '' : 'none' }
 
@@ -23,7 +23,7 @@ const Blog = ({ blog }) => {
         <a href={blog.url} style={showWhenVisible}>{blog.url}</a>
         <div style={showWhenVisible}>
           {blog.likes} likes
-            <button>like</button>
+            <button onClick={incremetLikes}>like</button>
         </div>
         <p style={showWhenVisible}>
           added by {blog.user.name}
