@@ -28,11 +28,12 @@ function App() {
       getUserBlogs()
     }
   }, [])
-
+  
   const getUserBlogs = async () => {
     const userBlogs = await blogsService.getAll()
-
-    setBlogs(userBlogs)
+    const sortBlogsByLikes = userBlogs.sort((blog1, blog2) => blog2.likes - blog1.likes)
+    
+    setBlogs(sortBlogsByLikes)
   }
 
   const handleLogin = async (event) => {
