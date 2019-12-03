@@ -28,11 +28,11 @@ function App() {
       getUserBlogs()
     }
   }, [])
-  
+
   const getUserBlogs = async () => {
     const userBlogs = await blogsService.getAll()
     const sortBlogsByLikes = userBlogs.sort((blog1, blog2) => blog2.likes - blog1.likes)
-    
+
     setBlogs(sortBlogsByLikes)
   }
 
@@ -151,7 +151,34 @@ function App() {
       setBlogs(blogs.map(b => b.id !== returnedBlog.id ? b : returnedBlog))
     } catch (exception) {
       console.log(exception)
-      // Set notification
+
+      setNotification('Something went wrong')
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
+  const handleRemoveBlog = async (blog) => {
+    const isConfirm = window.confirm(`Remove blog ${blog.title} ${blog.author}?`)
+
+    if (isConfirm) {
+      try {
+        await blogsService.remove(blog.id)
+
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+        setNotification(`${blog.title} blog removed`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      } catch (exception) {
+        console.log(exception)
+
+        setNotification('Something went wrong')
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      }
     }
   }
 
@@ -198,7 +225,11 @@ function App() {
       {blogForm()}
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} incremetLikes={() => handleIncrementBlogLikes(blog)} />
+        <Blog key={blog.id}
+          blog={blog}
+          incremetLikes={() => handleIncrementBlogLikes(blog)}
+          removeBlog={() => handleRemoveBlog(blog)}
+        />
       )}
     </div>
   );
