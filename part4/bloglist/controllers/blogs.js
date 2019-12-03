@@ -32,15 +32,15 @@ blogsRouter.post('/', async (request, response, next) => {
       ? new Blog({ ...body, user: user.id })
       : new Blog({ ...body, likes: 0, user: user.id });
 
-    console.log(blog)
-
     if (request.body.hasOwnProperty('title') && request.body.hasOwnProperty('url')) {
       const savedBlog = await blog.save()
 
       user.blogs = user.blogs.concat(savedBlog._id)
       await user.save()
 
-      response.status(201).json(savedBlog.toJSON())
+      const populateUser = await Blog.findById(savedBlog._id).populate('user', { blogs: 0 })
+
+      response.status(201).json(populateUser.toJSON())
     } else {
       response.status(400).end()
     }
@@ -53,8 +53,6 @@ blogsRouter.post('/', async (request, response, next) => {
 blogsRouter.delete('/:id', async (request, response, next) => {
   const blog = await Blog.findById(request.params.id)
 
-  console.log(blog)
-  console.log(blog.user)
   try {
     const token = request.token
     const decodedToken = jwt.verify(token, process.env.SECRET)
@@ -81,11 +79,11 @@ blogsRouter.put('/:id', async (request, response, next) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
-    blogs: body.blogs,
+    user: body.user,
   }
 
   try {
-    const updatedNote = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    const updatedNote = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('user', { blogs: 0 })
     response.json(updatedNote.toJSON())
   }
   catch (exception) {
