@@ -32,7 +32,7 @@ const Blog = ({ blog, incremetLikes, removeBlog, isBlogCreatedByUser }) => {
         <a href={blog.url} style={showWhenVisible}>{blog.url}</a>
         <div style={showWhenVisible}>
           {blog.likes} likes
-            <button onClick={incremetLikes}>like</button>
+          <button onClick={incremetLikes}>like</button>
         </div>
         <p style={showWhenVisible}>
           added by {blog.user.name}

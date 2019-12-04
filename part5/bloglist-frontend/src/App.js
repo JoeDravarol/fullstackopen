@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Form from './components/Form'
 import Notification from './components/Notification'
@@ -238,7 +238,7 @@ function App() {
         />
       )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

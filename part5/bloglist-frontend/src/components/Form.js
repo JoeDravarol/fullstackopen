@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Form = ({ addBlog, title, author, url }) => {
- 
+
   return (
     <form onSubmit={addBlog}>
       <div>
