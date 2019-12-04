@@ -182,6 +182,11 @@ function App() {
     }
   }
 
+  const isBlogCreatedByUser = (blog) => {
+    // Should be using user's id
+    return blog.user.username === user.username
+  }
+
   if (user === null) {
     return (
       <div>
@@ -229,6 +234,7 @@ function App() {
           blog={blog}
           incremetLikes={() => handleIncrementBlogLikes(blog)}
           removeBlog={() => handleRemoveBlog(blog)}
+          isBlogCreatedByUser={isBlogCreatedByUser(blog)}
         />
       )}
     </div>

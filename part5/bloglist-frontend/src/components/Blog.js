@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, incremetLikes, removeBlog }) => {
+const Blog = ({ blog, incremetLikes, removeBlog, isBlogCreatedByUser }) => {
   const [visible, setVisible] = useState(false)
   const showWhenVisible = { display: visible ? '' : 'none' }
 
@@ -16,6 +16,15 @@ const Blog = ({ blog, incremetLikes, removeBlog }) => {
     setVisible(!visible)
   }
 
+  const removeBlogButton = () => (
+    <button
+      style={showWhenVisible}
+      blog={blog}
+      onClick={removeBlog}>
+      remove
+    </button>
+  )
+
   return (
     <div style={blogStyle}>
       <div>
@@ -28,12 +37,7 @@ const Blog = ({ blog, incremetLikes, removeBlog }) => {
         <p style={showWhenVisible}>
           added by {blog.user.name}
         </p>
-        <button
-          style={showWhenVisible}
-          blog={blog}
-          onClick={removeBlog}>
-          remove
-          </button>
+        {isBlogCreatedByUser && removeBlogButton()}
       </div>
     </div>
   )
