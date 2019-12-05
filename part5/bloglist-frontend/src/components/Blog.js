@@ -27,16 +27,14 @@ const Blog = ({ blog, incremetLikes, removeBlog, isBlogCreatedByUser }) => {
 
   return (
     <div style={blogStyle}>
-      <div>
-        <p onClick={toggleVisibility}>{blog.title} {blog.author}</p>
-        <a href={blog.url} style={showWhenVisible}>{blog.url}</a>
-        <div style={showWhenVisible}>
+      <p className="blog-title" onClick={toggleVisibility}>{blog.title} {blog.author}</p>
+      <div className="togglableContent" style={showWhenVisible}>
+        <a href={blog.url}>{blog.url}</a>
+        <div>
           {blog.likes} likes
           <button onClick={incremetLikes}>like</button>
         </div>
-        <p style={showWhenVisible}>
-          added by {blog.user.name}
-        </p>
+        <p>added by {blog.user.name}</p>
         {isBlogCreatedByUser && removeBlogButton()}
       </div>
     </div>
