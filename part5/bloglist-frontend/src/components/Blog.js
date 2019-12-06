@@ -26,7 +26,7 @@ const Blog = ({ blog, incremetLikes, removeBlog, isBlogCreatedByUser }) => {
   )
 
   return (
-    <div style={blogStyle}>
+    <div className="blog" style={blogStyle}>
       <p className="blog-title" onClick={toggleVisibility}>{blog.title} {blog.author}</p>
       <div className="togglableContent" style={showWhenVisible}>
         <a href={blog.url}>{blog.url}</a>
