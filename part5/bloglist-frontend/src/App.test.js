@@ -25,4 +25,36 @@ describe('<App />', () => {
     expect(loginButton).toBeDefined()
     expect(blog).toBeNull()
   })
+
+  test('if user logged in, blogs are rendered', async () => {
+    const user = {
+      username: 'tester',
+      token: '1231231234',
+      name: 'Damian Tester'
+    }
+
+    localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+
+    const component = render(
+      <App />
+    )
+    component.rerender(<App />)
+
+    await waitForElement(
+      () => component.container.querySelector('.blog')
+    )
+
+    const blogs = component.container.querySelectorAll('.blog')
+    expect(blogs.length).toBe(3)
+
+    expect(component.container).toHaveTextContent(
+      'Testing could be easier'
+    )
+    expect(component.container).toHaveTextContent(
+      'Integration testing for dummy'
+    )
+    expect(component.container).toHaveTextContent(
+      'Unit testing for dummy'
+    )
+  })
 })
