@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useField } from './hooks'
 import Blog from './components/Blog'
 import Form from './components/Form'
 import Notification from './components/Notification'
@@ -8,15 +9,15 @@ import loginService from './services/login'
 import blogsService from './services/blogs'
 
 function App() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
-  // For Form
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [notification, setNotification] = useState(null)
+  // For Form
+  const username = useField('text', 'username')
+  const password = useField('password', 'password')
+  const title = useField('text', 'title')
+  const author = useField('text', 'author')
+  const url = useField('text', 'url')
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -41,7 +42,8 @@ function App() {
 
     try {
       const user = await loginService.login({
-        username, password,
+        username: username.value,
+        password: password.value,
       })
 
       window.localStorage.setItem(
@@ -73,10 +75,6 @@ function App() {
     setUser(null)
   }
 
-  const handleTitleChange = event => setTitle(event.target.value)
-  const handleAuthorChange = event => setAuthor(event.target.value)
-  const handleUrlChange = event => setUrl(event.target.value)
-
   const blogFormRef = React.createRef()
 
   const blogForm = () => {
@@ -84,18 +82,9 @@ function App() {
       <Togglable buttonLabel="new Blog" ref={blogFormRef} >
         <Form
           addBlog={addBlog}
-          title={{
-            value: title,
-            onChange: handleTitleChange
-          }}
-          author={{
-            value: author,
-            onChange: handleAuthorChange
-          }}
-          url={{
-            value: url,
-            onChange: handleUrlChange
-          }}
+          title={{ ...title }}
+          author={{ ...author }}
+          url={{ ...url }}
         />
       </Togglable >
     )
@@ -107,9 +96,9 @@ function App() {
 
     try {
       const blogObject = {
-        title: title,
-        author: author,
-        url: url
+        title: title.value,
+        author: author.value,
+        url: url.value
       }
 
       const returnedBlog = await blogsService.create(blogObject)
@@ -197,21 +186,11 @@ function App() {
         <form onSubmit={handleLogin}>
           <div>
             username
-            <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
+            <input {...username} />
           </div>
           <div>
             password
-            <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
+            <input {...password} />
           </div>
           <button type="submit">Login</button>
         </form>

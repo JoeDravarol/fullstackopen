@@ -6,30 +6,15 @@ const Form = ({ addBlog, title, author, url }) => {
     <form onSubmit={addBlog}>
       <div>
         title:
-        <input
-          type="text"
-          value={title.value}
-          name="Title"
-          onChange={title.onChange}
-        />
+        <input {...title} />
       </div>
       <div>
         author:
-        <input
-          type="text"
-          value={author.value}
-          name="Author"
-          onChange={author.onChange}
-        />
+        <input {...author} />
       </div>
       <div>
         url:
-        <input
-          type="text"
-          value={url.value}
-          name="Url"
-          onChange={url.onChange}
-        />
+        <input {...url} />
       </div>
       <button type="submit">create</button>
     </form>
