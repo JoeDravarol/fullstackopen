@@ -13,11 +13,11 @@ function App() {
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState(null)
   // For Form
-  const username = useField('text', 'username')
-  const password = useField('password', 'password')
-  const title = useField('text', 'title')
-  const author = useField('text', 'author')
-  const url = useField('text', 'url')
+  const [username, resetUsername] = useField('text', 'username')
+  const [password, resetPassword] = useField('password', 'password')
+  const [title, resetTitle] = useField('text', 'title')
+  const [author, resetAuthor] = useField('text', 'author')
+  const [url, resetUrl] = useField('text', 'url')
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -58,8 +58,8 @@ function App() {
       setUser(user)
       blogsService.setToken(user.token)
       getUserBlogs()
-      setUsername('')
-      setPassword('')
+      resetUsername()
+      resetPassword()
     } catch (exception) {
       console.log(exception)
 
@@ -104,9 +104,9 @@ function App() {
       const returnedBlog = await blogsService.create(blogObject)
 
       setBlogs(blogs.concat(returnedBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      resetTitle()
+      resetAuthor()
+      resetUrl()
 
       setNotification(`A new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
       setTimeout(() => {
