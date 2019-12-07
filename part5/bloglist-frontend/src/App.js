@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { useField } from './hooks'
+import { useField, useResource } from './hooks'
 import Blog from './components/Blog'
 import Form from './components/Form'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
 import loginService from './services/login'
-import blogsService from './services/blogs'
 
 function App() {
   const [user, setUser] = useState(null)
-  const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState(null)
   // For Form
   const [username, resetUsername] = useField('text', 'username')
@@ -18,6 +16,8 @@ function App() {
   const [title, resetTitle] = useField('text', 'title')
   const [author, resetAuthor] = useField('text', 'author')
   const [url, resetUrl] = useField('text', 'url')
+  // blogsService
+  const [blogs, blogsService] = useResource('/api/blogs')
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -31,10 +31,7 @@ function App() {
   }, [])
 
   const getUserBlogs = async () => {
-    const userBlogs = await blogsService.getAll()
-    const sortBlogsByLikes = userBlogs.sort((blog1, blog2) => blog2.likes - blog1.likes)
-
-    setBlogs(sortBlogsByLikes)
+    await blogsService.get()
   }
 
   const handleLogin = async (event) => {
@@ -101,14 +98,13 @@ function App() {
         url: url.value
       }
 
-      const returnedBlog = await blogsService.create(blogObject)
+      await blogsService.create(blogObject)
 
-      setBlogs(blogs.concat(returnedBlog))
       resetTitle()
       resetAuthor()
       resetUrl()
 
-      setNotification(`A new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+      setNotification(`A new blog ${blogObject.title} by ${blogObject.author} added`)
       setTimeout(() => {
         setNotification(null)
       }, 5000)
@@ -135,9 +131,7 @@ function App() {
         url
       }
 
-      const returnedBlog = await blogsService.updateLikes(blog.id, newBlog)
-
-      setBlogs(blogs.map(b => b.id !== returnedBlog.id ? b : returnedBlog))
+      await blogsService.update(blog.id, newBlog)
     } catch (exception) {
       console.log(exception)
 
@@ -155,7 +149,6 @@ function App() {
       try {
         await blogsService.remove(blog.id)
 
-        setBlogs(blogs.filter(b => b.id !== blog.id))
         setNotification(`${blog.title} blog removed`)
         setTimeout(() => {
           setNotification(null)
