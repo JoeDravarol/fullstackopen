@@ -1,10 +1,9 @@
 import React from 'react'
+import Anecdote from './Anecdote'
 import { incrementVote } from '../reducers/anecdoteReducer'
 import { setNotification } from '../reducers/notificationReducer'
-import Anecdote from './Anecdote'
 
 const AnecdoteList = ({ store }) => {
-  const anecdotes = store.getState().anecdotes
   const vote = (anecdote) => () => {
     store.dispatch(
       incrementVote(anecdote.id)
@@ -21,11 +20,29 @@ const AnecdoteList = ({ store }) => {
     }, 5000)
   }
 
+  const anecdotesToShow = () => {
+    const anecdotes = store.getState().anecdotes
+    const anecdoteToFilter = store.getState().filter
+
+    if (anecdoteToFilter !== '') {
+      const filteredAnecdotes = anecdotes.filter(anecdote => {
+        const content = anecdote.content.toLowerCase()
+        const filterValue = anecdoteToFilter.toLowerCase()
+
+        return content.indexOf(filterValue) !== -1
+      })
+
+      return filteredAnecdotes
+    }
+
+    return anecdotes
+  }
+
   return (
     <>
       {
-        anecdotes.map(anecdote =>
-          <Anecdote anecdote={anecdote} onClick={vote(anecdote)} />
+        anecdotesToShow().map(anecdote =>
+          <Anecdote key={anecdote.id} anecdote={anecdote} onClick={vote(anecdote)} />
         )
       }
     </>
