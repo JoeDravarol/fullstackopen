@@ -34,6 +34,10 @@ const reducer = (state = initialState, action) => {
         anecdote.id !== id ? anecdote : incrementedAnecdote
       )
       return newAnecdotes
+    case 'CREATE_ANECDOTE':
+      const anecdote = action.data.content
+      const newAnecdote = asObject(anecdote)
+      return [...state, newAnecdote]
     default:
       return state
   }
@@ -43,6 +47,13 @@ export const incrementVote = (id) => {
   return {
     type: 'INCREMENT_VOTE',
     data: { id }
+  }
+}
+
+export const createAnecdote = (content) => {
+  return {
+    type: 'CREATE_ANECDOTE',
+    data: { content }
   }
 }
 
