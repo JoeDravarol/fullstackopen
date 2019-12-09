@@ -17,6 +17,10 @@ const asObject = (anecdote) => {
   }
 }
 
+const orderByLikes = (anecdotes) => {
+  return anecdotes.sort((a, b) => b.votes - a.votes)
+}
+
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (state = initialState, action) => {
@@ -33,7 +37,7 @@ const reducer = (state = initialState, action) => {
       const newAnecdotes = state.map(anecdote =>
         anecdote.id !== id ? anecdote : incrementedAnecdote
       )
-      return newAnecdotes
+      return orderByLikes(newAnecdotes)
     case 'CREATE_ANECDOTE':
       const anecdote = action.data.content
       const newAnecdote = asObject(anecdote)
