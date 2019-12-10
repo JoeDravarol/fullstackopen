@@ -1,13 +1,3 @@
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0
-  }
-}
-
 const orderByLikes = (anecdotes) => {
   return anecdotes.sort((a, b) => b.votes - a.votes)
 }
@@ -28,9 +18,8 @@ const reducer = (state = [], action) => {
       )
       return orderByLikes(newAnecdotes)
     case 'CREATE_ANECDOTE':
-      const anecdote = action.data.content
-      const newAnecdote = asObject(anecdote)
-      return [...state, newAnecdote]
+      const anecdote = action.data
+      return [...state, anecdote]
     case 'INIT_ANECDOTES':
       return action.data
     default:
@@ -45,10 +34,10 @@ export const incrementVote = (id) => {
   }
 }
 
-export const createAnecdote = (content) => {
+export const createAnecdote = (data) => {
   return {
     type: 'CREATE_ANECDOTE',
-    data: { content }
+    data
   }
 }
 
