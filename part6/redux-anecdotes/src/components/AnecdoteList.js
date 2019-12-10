@@ -1,28 +1,22 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Anecdote from './Anecdote'
 import { incrementVote } from '../reducers/anecdoteReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
-const AnecdoteList = ({ store }) => {
+const AnecdoteList = (props) => {
   const vote = (anecdote) => () => {
-    store.dispatch(
-      incrementVote(anecdote.id)
-    )
-
-    store.dispatch(
-      setNotification(`you voted '${anecdote.content}'`)
-    )
+    props.incrementVote(anecdote.id)
+    props.setNotification(`you voted '${anecdote.content}'`)
 
     setTimeout(() => {
-      store.dispatch(
-        setNotification(null)
-      )
+      props.setNotification(null)
     }, 5000)
   }
 
   const anecdotesToShow = () => {
-    const anecdotes = store.getState().anecdotes
-    const anecdoteToFilter = store.getState().filter
+    const anecdotes = props.anecdotes
+    const anecdoteToFilter = props.filter
 
     if (anecdoteToFilter !== '') {
       const filteredAnecdotes = anecdotes.filter(anecdote => {
@@ -48,4 +42,20 @@ const AnecdoteList = ({ store }) => {
     </>
   )
 }
-export default AnecdoteList
+
+const mapStateToProps = (state) => {
+  return {
+    anecdotes: state.anecdotes,
+    filter: state.filter
+  }
+}
+
+const mapDispatchToProps = {
+  incrementVote,
+  setNotification
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AnecdoteList)
