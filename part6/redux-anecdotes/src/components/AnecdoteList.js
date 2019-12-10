@@ -14,28 +14,10 @@ const AnecdoteList = (props) => {
     }, 5000)
   }
 
-  const anecdotesToShow = () => {
-    const anecdotes = props.anecdotes
-    const anecdoteToFilter = props.filter
-
-    if (anecdoteToFilter !== '') {
-      const filteredAnecdotes = anecdotes.filter(anecdote => {
-        const content = anecdote.content.toLowerCase()
-        const filterValue = anecdoteToFilter.toLowerCase()
-
-        return content.indexOf(filterValue) !== -1
-      })
-
-      return filteredAnecdotes
-    }
-
-    return anecdotes
-  }
-
   return (
     <>
       {
-        anecdotesToShow().map(anecdote =>
+        props.visibleAnecdotes.map(anecdote =>
           <Anecdote key={anecdote.id} anecdote={anecdote} onClick={vote(anecdote)} />
         )
       }
@@ -43,10 +25,26 @@ const AnecdoteList = (props) => {
   )
 }
 
+const anecdotesToShow = ({ anecdotes, filter}) => {
+  const anecdoteToFilter = filter
+
+  if (anecdoteToFilter !== '') {
+    const filteredAnecdotes = anecdotes.filter(anecdote => {
+      const content = anecdote.content.toLowerCase()
+      const filterValue = anecdoteToFilter.toLowerCase()
+
+      return content.indexOf(filterValue) !== -1
+    })
+
+    return filteredAnecdotes
+  }
+
+  return anecdotes
+}
+
 const mapStateToProps = (state) => {
   return {
-    anecdotes: state.anecdotes,
-    filter: state.filter
+    visibleAnecdotes: anecdotesToShow(state)
   }
 }
 
