@@ -7,14 +7,9 @@ const AnecdoteForm = (props) => {
   const addAnecdote = async (e) => {
     e.preventDefault()
     const content = e.target.anecdote.value
-
     props.createAnecdote(content)
-    props.setNotification(`you added '${content}'`)
+    props.setNotification(`you added '${content}'`, 5)
     e.target.anecdote.value = ''
-
-    setTimeout(() => {
-      props.setNotification(null)
-    }, 5000)
   }
 
   return (
