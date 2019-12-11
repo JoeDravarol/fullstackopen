@@ -1,6 +1,6 @@
 import anecdoteService from '../services/anecdotes'
 
-const orderByLikes = (anecdotes) => {
+const orderByVotes = (anecdotes) => {
   return anecdotes.sort((a, b) => b.votes - a.votes)
 }
 
@@ -10,29 +10,28 @@ const reducer = (state = [], action) => {
   switch (action.type) {
     case 'INCREMENT_VOTE':
       const id = action.data.id
-      const anecdoteToIncrement = state.find(a => a.id === id)
-      const incrementedAnecdote = {
-        ...anecdoteToIncrement,
-        votes: ++anecdoteToIncrement.votes
-      }
+      const incrementedAnecdote = action.data
       const newAnecdotes = state.map(anecdote =>
         anecdote.id !== id ? anecdote : incrementedAnecdote
       )
-      return orderByLikes(newAnecdotes)
+      return orderByVotes(newAnecdotes)
     case 'CREATE_ANECDOTE':
       const anecdote = action.data
       return [...state, anecdote]
     case 'INIT_ANECDOTES':
-      return action.data
+      return orderByVotes(action.data)
     default:
       return state
   }
 }
 
-export const incrementVote = (id) => {
-  return {
-    type: 'INCREMENT_VOTE',
-    data: { id }
+export const incrementVote = (id, anecdote) => {
+  return async dispatch => {
+    const returnedAnecdote = await anecdoteService.updateVotes(id, anecdote)
+    dispatch({
+      type: 'INCREMENT_VOTE',
+      data: returnedAnecdote
+    })
   }
 }
 
