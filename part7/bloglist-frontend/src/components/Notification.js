@@ -1,9 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 const Notification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
+  if (message === null) return null
 
   return (
     <>
@@ -12,4 +11,10 @@ const Notification = ({ message }) => {
   )
 }
 
-export default Notification
+const mapStateToProps = (state) => {
+  return {
+    message: state.notification
+  }
+}
+
+export default connect(mapStateToProps)(Notification)

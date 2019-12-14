@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import { useField, useResource } from './hooks'
 import Blog from './components/Blog'
 import Form from './components/Form'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-
 import loginService from './services/login'
+import { toggleNotification } from './reducers/notificationReducer'
 
-function App() {
+function App(props) {
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
   // For Form
   const [username, resetUsername] = useField('text', 'username')
   const [password, resetPassword] = useField('password', 'password')
@@ -47,10 +47,7 @@ function App() {
         'loggedBlogappUser', JSON.stringify(user)
       )
 
-      setNotification('Login sucessful')
-      setTimeout(() => {
-        setNotification(null)
-      }, 3000)
+      props.setNotification('Login successful', 3)
 
       setUser(user)
       blogsService.setToken(user.token)
@@ -60,10 +57,7 @@ function App() {
     } catch (exception) {
       console.log(exception)
 
-      setNotification('Wrong username or password')
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      props.setNotification('Wrong username or password', 5)
     }
   }
 
@@ -104,17 +98,14 @@ function App() {
       resetAuthor()
       resetUrl()
 
-      setNotification(`A new blog ${blogObject.title} by ${blogObject.author} added`)
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      props.setNotification(
+        `A new blog ${blogObject.title} by ${blogObject.author} added`,
+        5
+      )
     } catch (exception) {
       console.log(exception)
 
-      setNotification('Something went wrong')
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      props.setNotification('Something went wrong', 5)
     }
   }
 
@@ -135,10 +126,7 @@ function App() {
     } catch (exception) {
       console.log(exception)
 
-      setNotification('Something went wrong')
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      props.setNotification('Something went wrong', 5)
     }
   }
 
@@ -149,17 +137,11 @@ function App() {
       try {
         await blogsService.remove(blog.id)
 
-        setNotification(`${blog.title} blog removed`)
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
+        props.setNotification(`${blog.title} blog removed`, 5)
       } catch (exception) {
         console.log(exception)
 
-        setNotification('Something went wrong')
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
+        props.setNotification('Something went wrong', 5)
       }
     }
   }
@@ -174,7 +156,7 @@ function App() {
       <div>
         <h2>Log in to application</h2>
 
-        <Notification message={notification} />
+        <Notification />
 
         <form onSubmit={handleLogin}>
           <div>
@@ -194,7 +176,7 @@ function App() {
     <div>
       <h2>blogs</h2>
 
-      <Notification message={notification} />
+      <Notification />
 
       <p>{user.name} logged in</p>
       <button type="submit" onClick={handleLogout} >Logout</button>
@@ -213,4 +195,15 @@ function App() {
   )
 }
 
-export default App
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setNotification: (message, time) => {
+      dispatch(toggleNotification(message, time))
+    }
+  }
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(App)
