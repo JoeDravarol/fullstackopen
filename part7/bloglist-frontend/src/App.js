@@ -1,11 +1,11 @@
-import React, {  useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useField } from './hooks'
 import Blog from './components/Blog'
 import Form from './components/Form'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import loginService from './services/login'
+import Login from './components/Login'
 import blogsService from './services/blogs'
 import { toggleNotification } from './reducers/notificationReducer'
 import {
@@ -16,8 +16,6 @@ import {
 import { setUser } from './reducers/userReducer'
 
 function App(props) {
-  const [username, resetUsername] = useField('text', 'username')
-  const [password, resetPassword] = useField('password', 'password')
   const [title, resetTitle] = useField('text', 'title')
   const [author, resetAuthor] = useField('text', 'author')
   const [url, resetUrl] = useField('text', 'url')
@@ -32,33 +30,6 @@ function App(props) {
       props.initializeBlogs()
     }
   }, [])
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
-    try {
-      const user = await loginService.login({
-        username: username.value,
-        password: password.value,
-      })
-
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-
-      props.setNotification('Login successful', 3)
-
-      props.setUser(user)
-      blogsService.setToken(user.token)
-      props.initializeBlogs()
-      resetUsername()
-      resetPassword()
-    } catch (exception) {
-      console.log(exception)
-
-      props.setNotification('Wrong username or password', 5)
-    }
-  }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
@@ -148,21 +119,8 @@ function App(props) {
   if (props.user === null) {
     return (
       <div>
-        <h2>Log in to application</h2>
-
         <Notification />
-
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input {...username} />
-          </div>
-          <div>
-            password
-            <input {...password} />
-          </div>
-          <button type="submit">Login</button>
-        </form>
+        <Login />
       </div>
     )
   }
