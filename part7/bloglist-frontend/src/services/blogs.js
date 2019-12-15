@@ -21,7 +21,7 @@ const create = async (newObject) => {
   return response.data
 }
 
-const updateLikes = async (id, newBlog) => {
+const update = async (id, newBlog) => {
   const request = await axios.put(`${baseUrl}/${id}`, newBlog)
   return request.data
 }
@@ -35,4 +35,4 @@ const remove = async (id) => {
   return request
 }
 
-export default { getAll, create, setToken, updateLikes, remove }
+export default { getAll, create, setToken, update, remove }

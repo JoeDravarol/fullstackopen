@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { useField, useResource } from './hooks'
+import { useField } from './hooks'
 import Blog from './components/Blog'
 import Form from './components/Form'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import loginService from './services/login'
+import blogsService from './services/blogs'
 import { toggleNotification } from './reducers/notificationReducer'
+import {
+  initializeBlogs,
+  addBlog, updateBlog,
+  removeBlog
+} from './reducers/blogsReducer'
 
 function App(props) {
   const [user, setUser] = useState(null)
@@ -16,8 +22,6 @@ function App(props) {
   const [title, resetTitle] = useField('text', 'title')
   const [author, resetAuthor] = useField('text', 'author')
   const [url, resetUrl] = useField('text', 'url')
-  // blogsService
-  const [blogs, blogsService] = useResource('/api/blogs')
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -26,13 +30,9 @@ function App(props) {
 
       setUser(user)
       blogsService.setToken(user.token)
-      getUserBlogs()
+      props.initializeBlogs()
     }
   }, [])
-
-  const getUserBlogs = async () => {
-    await blogsService.get()
-  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -51,7 +51,7 @@ function App(props) {
 
       setUser(user)
       blogsService.setToken(user.token)
-      getUserBlogs()
+      props.initializeBlogs()
       resetUsername()
       resetPassword()
     } catch (exception) {
@@ -92,8 +92,7 @@ function App(props) {
         url: url.value
       }
 
-      await blogsService.create(blogObject)
-
+      props.addBlog(blogObject)
       resetTitle()
       resetAuthor()
       resetUrl()
@@ -104,7 +103,6 @@ function App(props) {
       )
     } catch (exception) {
       console.log(exception)
-
       props.setNotification('Something went wrong', 5)
     }
   }
@@ -122,10 +120,9 @@ function App(props) {
         url
       }
 
-      await blogsService.update(blog.id, newBlog)
+      props.updateBlog(blog.id, newBlog)
     } catch (exception) {
       console.log(exception)
-
       props.setNotification('Something went wrong', 5)
     }
   }
@@ -135,12 +132,10 @@ function App(props) {
 
     if (isConfirm) {
       try {
-        await blogsService.remove(blog.id)
-
+        props.removeBlog(blog.id)
         props.setNotification(`${blog.title} blog removed`, 5)
       } catch (exception) {
         console.log(exception)
-
         props.setNotification('Something went wrong', 5)
       }
     }
@@ -183,7 +178,7 @@ function App(props) {
 
       {blogForm()}
 
-      {blogs.map(blog =>
+      {props.blogs.map(blog =>
         <Blog key={blog.id}
           blog={blog}
           incremetLikes={() => handleIncrementBlogLikes(blog)}
@@ -195,15 +190,21 @@ function App(props) {
   )
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToDispatch = (state) => {
   return {
-    setNotification: (message, time) => {
-      dispatch(toggleNotification(message, time))
-    }
+    blogs: state.blogs
   }
 }
 
+const actionCreators = {
+  setNotification: toggleNotification,
+  initializeBlogs,
+  addBlog,
+  updateBlog,
+  removeBlog
+}
+
 export default connect(
-  null,
-  mapDispatchToProps
+  mapStateToDispatch,
+  actionCreators
 )(App)
