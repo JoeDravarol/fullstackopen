@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, {  useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useField } from './hooks'
 import Blog from './components/Blog'
@@ -13,10 +13,9 @@ import {
   addBlog, updateBlog,
   removeBlog
 } from './reducers/blogsReducer'
+import { setUser } from './reducers/userReducer'
 
 function App(props) {
-  const [user, setUser] = useState(null)
-  // For Form
   const [username, resetUsername] = useField('text', 'username')
   const [password, resetPassword] = useField('password', 'password')
   const [title, resetTitle] = useField('text', 'title')
@@ -28,7 +27,7 @@ function App(props) {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
 
-      setUser(user)
+      props.setUser(user)
       blogsService.setToken(user.token)
       props.initializeBlogs()
     }
@@ -49,7 +48,7 @@ function App(props) {
 
       props.setNotification('Login successful', 3)
 
-      setUser(user)
+      props.setUser(user)
       blogsService.setToken(user.token)
       props.initializeBlogs()
       resetUsername()
@@ -63,7 +62,7 @@ function App(props) {
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
+    props.setUser(null)
   }
 
   const blogFormRef = React.createRef()
@@ -143,10 +142,10 @@ function App(props) {
 
   const isBlogCreatedByUser = (blog) => {
     // Should be using user's id
-    return blog.user.username === user.username
+    return blog.user.username === props.user.username
   }
 
-  if (user === null) {
+  if (props.user === null) {
     return (
       <div>
         <h2>Log in to application</h2>
@@ -173,7 +172,7 @@ function App(props) {
 
       <Notification />
 
-      <p>{user.name} logged in</p>
+      <p>{props.user.name} logged in</p>
       <button type="submit" onClick={handleLogout} >Logout</button>
 
       {blogForm()}
@@ -192,7 +191,8 @@ function App(props) {
 
 const mapStateToDispatch = (state) => {
   return {
-    blogs: state.blogs
+    blogs: state.blogs,
+    user: state.user
   }
 }
 
@@ -201,7 +201,8 @@ const actionCreators = {
   initializeBlogs,
   addBlog,
   updateBlog,
-  removeBlog
+  removeBlog,
+  setUser
 }
 
 export default connect(
