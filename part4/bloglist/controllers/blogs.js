@@ -75,11 +75,7 @@ blogsRouter.put('/:id', async (request, response, next) => {
   const body = request.body
 
   const blog = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
-    user: body.user,
+    ...body
   }
 
   try {
@@ -89,6 +85,16 @@ blogsRouter.put('/:id', async (request, response, next) => {
   catch (exception) {
     next(exception)
   }
+})
+
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  const body = request.body
+  const id = request.params.id
+  const blog = await Blog.findById(id)
+  const comments = [...blog.comments, body.comment]
+
+  const updatedBlog = await Blog.findByIdAndUpdate(id, { comments }, { new: true }).populate('user', { blogs: 0 })
+  response.json(updatedBlog.toJSON())
 })
 
 module.exports = blogsRouter
