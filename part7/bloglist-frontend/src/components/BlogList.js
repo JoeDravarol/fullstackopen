@@ -4,18 +4,12 @@ import { connect } from 'react-redux'
 import BlogForm from './BlogForm'
 import { toggleNotification } from '../reducers/notificationReducer'
 import { addBlog } from '../reducers/blogsReducer'
-import { setUser } from '../reducers/userReducer'
 import { Link } from 'react-router-dom'
 
 const BlogList = (props) => {
   const [title, resetTitle] = useField('text', 'title')
   const [author, resetAuthor] = useField('text', 'author')
   const [url, resetUrl] = useField('text', 'url')
-
-  const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogappUser')
-    props.setUser(null)
-  }
 
   const blogFormRef = React.createRef()
 
@@ -55,10 +49,7 @@ const BlogList = (props) => {
 
   return (
     <>
-      <h2>blogs</h2>
-
-      <p>{props.user.name} logged in</p>
-      <button type="submit" onClick={handleLogout}>Logout</button>
+      <h2>blog app</h2>
 
       <BlogForm
         addBlog={addBlog}
@@ -82,14 +73,12 @@ const BlogList = (props) => {
 const mapStateToProps = (state) => {
   return {
     blogs: state.blogs,
-    user: state.user
   }
 }
 
 const actionCreators = {
   setNotification: toggleNotification,
   addBlog,
-  setUser
 }
 
 export default connect(

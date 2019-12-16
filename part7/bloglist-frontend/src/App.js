@@ -7,6 +7,7 @@ import BlogList from './components/BlogList'
 import Blog from './components/Blog'
 import Users from './components/Users'
 import User from './components/User'
+import Menu from './components/Menu'
 import blogsService from './services/blogs'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { setUser } from './reducers/userReducer'
@@ -40,13 +41,14 @@ function App(props) {
     <div>
       <Router>
         <div>
+          <Menu />
           <Notification />
-
-          {props.isUserNull
-            ? <Login />
-            : <BlogList />
-          }
-
+          <Route exact path="/">
+            {props.isUserNull
+              ? <Login />
+              : <BlogList />
+            }
+          </Route>
           <Route exact path="/users" render={() => <Users users={users} />} />
           <Route exact path="/users/:id" render={({ match }) =>
             <User user={userById(match.params.id)} />

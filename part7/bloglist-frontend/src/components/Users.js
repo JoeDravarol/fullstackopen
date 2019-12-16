@@ -8,16 +8,18 @@ const Users = ({ users }) => {
       <h2>Users</h2>
       <table>
         <thead>
-          <td></td>
-          <th>blogs created</th>
+          <tr>
+            <th></th>
+            <th>blogs created</th>
+          </tr>
         </thead>
         <tbody>
           {
             users.map(u =>
               <tr key={u.id}>
-                <Link to={`/users/${u.id}`}>
-                  <td>{u.name}</td>
-                </Link>
+                <td>
+                  <Link to={`/users/${u.id}`}>{u.name}</Link>
+                </td>
                 <td>{u.blogs.length}</td>
               </tr>
             )
