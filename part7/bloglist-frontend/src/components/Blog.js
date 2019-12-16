@@ -36,6 +36,12 @@ const Blog = (props) => {
         <button onClick={() => handleIncrementBlogLikes(blog)}>like</button>
         <p>added by {blog.user.name}</p>
       </div>
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map(c =>
+          <li key={c}>{c}</li>
+        )}
+      </ul>
     </div>
   )
 }
