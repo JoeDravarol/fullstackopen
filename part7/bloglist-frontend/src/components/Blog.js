@@ -1,10 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { toggleNotification } from '../reducers/notificationReducer'
-import { updateBlog } from '../reducers/blogsReducer'
+import {
+  updateBlog,
+  addComment
+} from '../reducers/blogsReducer'
 import { setUser } from '../reducers/userReducer'
+import { useField } from '../hooks/index'
 
 const Blog = (props) => {
+  const [comment, resetComment] = useField('text', 'comment')
   const blog = props.blog
 
   if (blog === undefined) return null
@@ -27,6 +32,19 @@ const Blog = (props) => {
     }
   }
 
+  const addComment = async (e) => {
+    e.preventDefault()
+
+    try {
+      props.addComment(blog.id, comment.value)
+      resetComment()
+      props.setNotification(`A new comment ${comment.value} added`, 5)
+    } catch (exception) {
+      console.log(exception)
+      props.setNotification('Something went wrong', 5)
+    }
+  }
+
   return (
     <div>
       <h2>{blog.title}</h2>
@@ -37,6 +55,10 @@ const Blog = (props) => {
         <p>added by {blog.user.name}</p>
       </div>
       <h3>comments</h3>
+      <form onSubmit={addComment}>
+        <input {...comment} />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {blog.comments.map(c =>
           <li key={c}>{c}</li>
@@ -61,7 +83,8 @@ const mapStateToProps = (state, ownProps) => {
 const actionCreators = {
   setNotification: toggleNotification,
   setUser,
-  updateBlog
+  updateBlog,
+  addComment
 }
 
 export default connect(
