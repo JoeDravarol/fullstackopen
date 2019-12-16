@@ -1,14 +1,8 @@
-import React, { useEffect } from 'react'
-import { useResource } from '../hooks/index'
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-const Users = () => {
-  const [users, usersService] = useResource('/api/users')
+const Users = ({ users }) => {
 
-  useEffect( async() => {
-    await usersService.get()
-  }, [])
-
-  console.log(users)
   return (
     <div>
       <h2>Users</h2>
@@ -21,7 +15,9 @@ const Users = () => {
           {
             users.map(u =>
               <tr key={u.id}>
-                <td>{u.name}</td>
+                <Link to={`/users/${u.id}`}>
+                  <td>{u.name}</td>
+                </Link>
                 <td>{u.blogs.length}</td>
               </tr>
             )
