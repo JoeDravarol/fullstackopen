@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Notification from './components/Notification'
 import Login from './components/Login'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import Users from './components/Users'
 import User from './components/User'
 import blogsService from './services/blogs'
@@ -33,7 +34,7 @@ function App(props) {
   }, [])
 
   const userById = (id) =>
-    users.find(u => u.id === id)
+    users.find(r => r.id === id)
 
   return (
     <div>
@@ -50,6 +51,9 @@ function App(props) {
           <Route exact path="/users/:id" render={({ match }) =>
             <User user={userById(match.params.id)} />
           } />
+          <Route exact path="/blogs/:id" render={({ match }) =>
+            <Blog id={match.params.id} />
+          } />
         </div>
       </Router>
     </div>
@@ -58,7 +62,8 @@ function App(props) {
 
 const mapStateToProps = (state) => {
   return {
-    isUserNull: state.user === null
+    isUserNull: state.user === null,
+    blogs: state.blogs
   }
 }
 

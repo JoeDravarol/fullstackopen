@@ -1,44 +1,64 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { connect } from 'react-redux'
+import { toggleNotification } from '../reducers/notificationReducer'
+import { updateBlog } from '../reducers/blogsReducer'
+import { setUser } from '../reducers/userReducer'
 
-const Blog = ({ blog, incremetLikes, removeBlog, isBlogCreatedByUser }) => {
-  const [visible, setVisible] = useState(false)
-  const showWhenVisible = { display: visible ? '' : 'none' }
+const Blog = (props) => {
+  const blog = props.blog
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
+  if (blog === undefined) return null
+
+  const handleIncrementBlogLikes = async (blog) => {
+    try {
+      const { user, likes, author, title, url } = blog
+      const newBlog = {
+        user: user.id,
+        likes: likes + 1,
+        author,
+        title,
+        url
+      }
+
+      props.updateBlog(blog.id, newBlog)
+    } catch (exception) {
+      console.log(exception)
+      props.setNotification('Something went wrong', 5)
+    }
   }
-
-  const toggleVisibility = () => {
-    setVisible(!visible)
-  }
-
-  const removeBlogButton = () => (
-    <button
-      style={showWhenVisible}
-      blog={blog}
-      onClick={removeBlog}>
-      remove
-    </button>
-  )
 
   return (
-    <div className="blog" style={blogStyle}>
-      <p className="blog-title" onClick={toggleVisibility}>{blog.title} {blog.author}</p>
-      <div className="togglableContent" style={showWhenVisible}>
-        <a href={blog.url}>{blog.url}</a>
-        <div>
-          {blog.likes} likes
-          <button onClick={incremetLikes}>like</button>
-        </div>
+    <div>
+      <h2>{blog.title}</h2>
+      <a href={blog.url}>{blog.url}</a>
+      <div>
+        {blog.likes} likes
+        <button onClick={() => handleIncrementBlogLikes(blog)}>like</button>
         <p>added by {blog.user.name}</p>
-        {isBlogCreatedByUser && removeBlogButton()}
       </div>
     </div>
   )
 }
 
-export default Blog
+const findBlogToRender = (id, blogs) =>
+  blogs.find(b => b.id === id)
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    blog: findBlogToRender(
+      ownProps.id,
+      state.blogs
+    )
+  }
+}
+
+const actionCreators = {
+  setNotification: toggleNotification,
+  setUser,
+  updateBlog
+}
+
+export default connect(
+  mapStateToProps,
+  actionCreators
+)(Blog)

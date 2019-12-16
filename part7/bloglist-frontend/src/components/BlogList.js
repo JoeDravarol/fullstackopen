@@ -1,24 +1,16 @@
 import React from 'react'
 import { useField } from '../hooks/index'
 import { connect } from 'react-redux'
-import Blog from './Blog'
 import BlogForm from './BlogForm'
 import { toggleNotification } from '../reducers/notificationReducer'
-import {
-  addBlog, updateBlog,
-  removeBlog
-} from '../reducers/blogsReducer'
+import { addBlog } from '../reducers/blogsReducer'
 import { setUser } from '../reducers/userReducer'
+import { Link } from 'react-router-dom'
 
 const BlogList = (props) => {
   const [title, resetTitle] = useField('text', 'title')
   const [author, resetAuthor] = useField('text', 'author')
   const [url, resetUrl] = useField('text', 'url')
-
-  const isBlogCreatedByUser = (blog) => {
-    // Should be using user's id
-    return blog.user.username === props.user.username
-  }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
@@ -53,36 +45,12 @@ const BlogList = (props) => {
     }
   }
 
-  const handleIncrementBlogLikes = async (blog) => {
-    try {
-      const { user, likes, author, title, url } = blog
-      const newBlog = {
-        user: user.id,
-        likes: likes + 1,
-        author,
-        title,
-        url
-      }
-
-      props.updateBlog(blog.id, newBlog)
-    } catch (exception) {
-      console.log(exception)
-      props.setNotification('Something went wrong', 5)
-    }
-  }
-
-  const handleRemoveBlog = (blog) => {
-    const isConfirm = window.confirm(`Remove blog ${blog.title} ${blog.author}?`)
-
-    if (isConfirm) {
-      try {
-        props.removeBlog(blog.id)
-        props.setNotification(`${blog.title} blog removed`, 5)
-      } catch (exception) {
-        console.log(exception)
-        props.setNotification('Something went wrong', 5)
-      }
-    }
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
   }
 
   return (
@@ -101,13 +69,11 @@ const BlogList = (props) => {
       />
 
       {props.blogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          incremetLikes={() => handleIncrementBlogLikes(blog)}
-          removeBlog={() => handleRemoveBlog(blog)}
-          isBlogCreatedByUser={isBlogCreatedByUser(blog)}
-        />
+        <div key={blog.id} style={blogStyle}>
+          <Link to={`/blogs/${blog.id}`} >
+            {blog.title} {blog.author}
+          </Link>
+        </div>
       )}
     </>
   )
@@ -123,8 +89,6 @@ const mapStateToProps = (state) => {
 const actionCreators = {
   setNotification: toggleNotification,
   addBlog,
-  updateBlog,
-  removeBlog,
   setUser
 }
 
