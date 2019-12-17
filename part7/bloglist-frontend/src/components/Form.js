@@ -1,23 +1,24 @@
 import React from 'react'
+import { Form as FormSUi, Button } from 'semantic-ui-react'
 
 const Form = ({ addBlog, title, author, url }) => {
 
   return (
-    <form onSubmit={addBlog}>
-      <div>
-        title:
+    <FormSUi onSubmit={addBlog}>
+      <FormSUi.Field>
+        <label>title:</label>
         <input {...title} />
-      </div>
-      <div>
-        author:
+      </FormSUi.Field>
+      <FormSUi.Field>
+        <label>author:</label>
         <input {...author} />
-      </div>
-      <div>
-        url:
+      </FormSUi.Field>
+      <FormSUi.Field>
+        <label>url:</label>
         <input {...url} />
-      </div>
-      <button type="submit">create</button>
-    </form>
+      </FormSUi.Field>
+      <Button type="submit">create</Button>
+    </FormSUi>
   )
 }
 

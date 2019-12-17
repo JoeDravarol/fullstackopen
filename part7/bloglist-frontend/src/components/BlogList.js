@@ -5,6 +5,7 @@ import BlogForm from './BlogForm'
 import { toggleNotification } from '../reducers/notificationReducer'
 import { addBlog } from '../reducers/blogsReducer'
 import { Link } from 'react-router-dom'
+import { List } from 'semantic-ui-react'
 
 const BlogList = (props) => {
   const [title, resetTitle] = useField('text', 'title')
@@ -39,14 +40,6 @@ const BlogList = (props) => {
     }
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   return (
     <>
       <h2>blog app</h2>
@@ -59,13 +52,17 @@ const BlogList = (props) => {
         blogFormRef={blogFormRef}
       />
 
-      {props.blogs.map(blog =>
-        <div key={blog.id} style={blogStyle}>
-          <Link to={`/blogs/${blog.id}`} >
+      <List divided relaxed>
+        {props.blogs.map(blog =>
+          <List.Item
+            as={Link}
+            to={`/blogs/${blog.id}`}
+            key={blog.id}
+          >
             {blog.title} {blog.author}
-          </Link>
-        </div>
-      )}
+          </List.Item>
+        )}
+      </List>
     </>
   )
 }

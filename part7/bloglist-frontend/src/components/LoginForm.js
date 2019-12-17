@@ -6,6 +6,7 @@ import blogsService from '../services/blogs'
 import { toggleNotification } from '../reducers/notificationReducer'
 import { initializeBlogs } from '../reducers/blogsReducer'
 import { setUser } from '../reducers/userReducer'
+import { Form, Button } from 'semantic-ui-react'
 
 const LoginForm = (props) => {
   const [username, resetUsername] = useField('text', 'username')
@@ -38,17 +39,17 @@ const LoginForm = (props) => {
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
+    <Form onSubmit={handleLogin}>
+      <Form.Field>
+        <label>username:</label>
         <input {...username} />
-      </div>
-      <div>
-        password
+      </Form.Field>
+      <Form.Field>
+        <label>password:</label>
         <input {...password} />
-      </div>
-      <button type="submit">Login</button>
-    </form>
+      </Form.Field>
+      <Button type="submit">Login</Button>
+    </Form>
   )
 }
 

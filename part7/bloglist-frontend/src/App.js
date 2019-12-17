@@ -15,6 +15,7 @@ import {
   BrowserRouter as Router,
   Route
 } from 'react-router-dom'
+import { Container } from 'semantic-ui-react'
 
 function App(props) {
   const [users, usersService] = useResource('/api/users')
@@ -38,7 +39,7 @@ function App(props) {
     users.find(r => r.id === id)
 
   return (
-    <div>
+    <Container>
       <Router>
         <div>
           <Menu />
@@ -58,7 +59,7 @@ function App(props) {
           } />
         </div>
       </Router>
-    </div>
+    </Container>
   )
 }
 

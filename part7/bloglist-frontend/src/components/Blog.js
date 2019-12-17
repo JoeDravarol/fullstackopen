@@ -7,6 +7,12 @@ import {
 } from '../reducers/blogsReducer'
 import { setUser } from '../reducers/userReducer'
 import { useField } from '../hooks/index'
+import {
+  Form,
+  Button,
+  List,
+  Item
+} from 'semantic-ui-react'
 
 const Blog = (props) => {
   const [comment, resetComment] = useField('text', 'comment')
@@ -47,23 +53,30 @@ const Blog = (props) => {
 
   return (
     <div>
-      <h2>{blog.title}</h2>
-      <a href={blog.url}>{blog.url}</a>
-      <div>
-        {blog.likes} likes
-        <button onClick={() => handleIncrementBlogLikes(blog)}>like</button>
-        <p>added by {blog.user.name}</p>
-      </div>
+      <Item>
+        <Item.Content>
+          <Item.Header as="h2">{blog.title}</Item.Header>
+          <Item.Meta as="a" href={blog.url}>
+            {blog.url}
+          </Item.Meta>
+          <Item.Description>
+            <span>
+              {blog.likes} likes
+              <button onClick={() => handleIncrementBlogLikes(blog)}>like</button>
+            </span>
+            <p>added by {blog.user.name}</p>
+          </Item.Description>
+        </Item.Content>
+      </Item>
       <h3>comments</h3>
-      <form onSubmit={addComment}>
+      <Form onSubmit={addComment}>
         <input {...comment} />
-        <button type="submit">add comment</button>
-      </form>
-      <ul>
-        {blog.comments.map(c =>
-          <li key={c}>{c}</li>
-        )}
-      </ul>
+        <Button type="submit">add comment</Button>
+      </Form>
+      <List
+        bulleted
+        items={blog.comments.map(comment => comment)}
+      />
     </div>
   )
 }

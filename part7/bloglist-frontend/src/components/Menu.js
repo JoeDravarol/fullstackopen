@@ -2,6 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { setUser } from '../reducers/userReducer'
+import {
+  Menu as MenuSUi,
+  Button
+} from 'semantic-ui-react'
 
 const Menu = (props) => {
   const handleLogout = () => {
@@ -12,12 +16,18 @@ const Menu = (props) => {
   if (props.user === null) return null
 
   return (
-    <div>
-      <Link to="/">blogs</Link>
-      <Link to="/users">users</Link>
-      {props.user.name} logged in
-      <button type="submit" onClick={handleLogout}>Logout</button>
-    </div>
+    <MenuSUi pointing secondary>
+      <MenuSUi.Item as={Link} to="/" link>
+        blogs
+      </MenuSUi.Item>
+      <MenuSUi.Item as={Link} to="/users">
+        users
+      </MenuSUi.Item>
+      <MenuSUi.Item>
+        {props.user.name} logged in
+        <Button type="submit" onClick={handleLogout}>Logout</Button>
+      </MenuSUi.Item>
+    </MenuSUi>
   )
 }
 
