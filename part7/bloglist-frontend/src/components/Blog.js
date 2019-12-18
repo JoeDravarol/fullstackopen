@@ -70,8 +70,8 @@ const Blog = (props) => {
       </Item>
       <h3>comments</h3>
       <Form onSubmit={addComment}>
-        <input {...comment} />
-        <Button type="submit">add comment</Button>
+        <input {...comment} data-cy="comment" />
+        <Button type="submit" data-cy="submit" >add comment</Button>
       </Form>
       <List
         bulleted
