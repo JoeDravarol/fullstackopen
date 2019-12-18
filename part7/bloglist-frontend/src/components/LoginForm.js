@@ -42,11 +42,11 @@ const LoginForm = (props) => {
     <Form onSubmit={handleLogin}>
       <Form.Field>
         <label>username:</label>
-        <input {...username} />
+        <input {...username} data-cy="username" />
       </Form.Field>
       <Form.Field>
         <label>password:</label>
-        <input {...password} />
+        <input {...password} data-cy="password" />
       </Form.Field>
       <Button type="submit">Login</Button>
     </Form>
