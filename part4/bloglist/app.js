@@ -20,6 +20,11 @@ mongoose.connect(config.MONGODB_URL, { useNewUrlParser: true })
     logger.error('error connecting to MongoDB', error.message)
   })
 
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing')
+  app.use('/api/testing', testingRouter)
+}
+
 app.use(cors())
 app.use(bodyParser.json())
 app.use(middleware.requestLogger)
