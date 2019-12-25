@@ -140,7 +140,8 @@ const AuthorHelpers = {
     const newAuthor = {
       name,
       born: null,
-      bookCount: 1
+      bookCount: 1,
+      id: uuid()
     }
     authors = authors.concat(newAuthor)
   },
