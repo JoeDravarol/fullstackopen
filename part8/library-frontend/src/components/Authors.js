@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Authors = ({ show, result }) => {
+const Authors = ({ show, result, editAuthor }) => {
   if (!show) {
     return null
   }
@@ -10,6 +10,20 @@ const Authors = ({ show, result }) => {
   }
 
   const authors = result.data.allAuthors
+
+  const submitBirthYear = async (e) => {
+    e.preventDefault()
+    const target = e.target
+    const name = target.name.value
+    const setBornTo = Number(target.born.value)
+
+    await editAuthor({
+      variables: { name, setBornTo }
+    })
+
+    target.name.value = ''
+    target.born.value = ''
+  }
 
   return (
     <div>
@@ -34,7 +48,18 @@ const Authors = ({ show, result }) => {
           )}
         </tbody>
       </table>
-
+      <h2>Set birthyear</h2>
+      <form onSubmit={submitBirthYear}>
+        <div>
+          name
+          <input type="text" name="name" />
+        </div>
+        <div>
+          born
+          <input type="text" name="born" />
+        </div>
+        <button>update author</button>
+      </form>
     </div>
   )
 }
