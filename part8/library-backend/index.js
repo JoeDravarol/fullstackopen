@@ -65,8 +65,8 @@ const AuthorHelpers = {
   incrementBookCount: async (author) => {
     const updatedAuthor = await Author.findOne({ name: author.name })
     updatedAuthor.bookCount = ++author.bookCount
-    await updatedAuthor.save()
 
+    await updatedAuthor.save()
     return updatedAuthor
   },
   createAuthor: async (name) => {
@@ -78,13 +78,11 @@ const AuthorHelpers = {
     await author.save()
     return author
   },
-  setAuthorBornTo: (author, year) => {
-    const updatedAuthor = { ...author, born: year }
-    authors = authors.map(a =>
-      a.name !== author.name
-        ? a
-        : updatedAuthor
-    )
+  setAuthorBornTo: async (author, year) => {
+    const updatedAuthor = await Author.findOne({ name: author.name })
+    updatedAuthor.born = year
+
+    await updatedAuthor.save()
     return updatedAuthor
   }
 }
@@ -94,15 +92,21 @@ const resolvers = {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      const books = await Book.find({})
-      return books
+      if (!args.author && !args.genre) {
+        return await Book.find({}).populate('author')
+      }
+
+      if (args.genre) {
+        return await Book.find({ genres: { $in: [args.genre] } }).populate('author')
+      }
     },
     allAuthors: () => Author.find({})
   },
   Author: {
-    bookCount: (root) => {
+    bookCount: async (root) => {
+      const books = await Book.find({})
       return books.reduce((total, book) =>
-        book.author === root.name ? ++total : total, 0
+        String(book.author) === root.id ? ++total : total, 0
       )
     }
   },
@@ -122,8 +126,8 @@ const resolvers = {
       await book.save()
       return book
     },
-    editAuthor: (root, args) => {
-      const author = AuthorHelpers.findAuthor(args.name)
+    editAuthor: async (root, args) => {
+      const author = await AuthorHelpers.findAuthor(args.name)
 
       if (author === undefined) return null
 
