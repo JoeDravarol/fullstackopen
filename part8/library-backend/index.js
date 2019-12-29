@@ -2,8 +2,7 @@ require('dotenv').config()
 const {
   ApolloServer,
   gql,
-  UserInputError,
-  AuthenticationError
+  UserInputError
 } = require('apollo-server')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
@@ -11,6 +10,13 @@ const JWT_SECRET = process.env.JWT_SECRET
 const Author = require('./models/author')
 const Book = require('./models/book')
 const User = require('./models/user')
+const {
+  findAuthor,
+  incrementBookCount,
+  createAuthor,
+  setAuthorBornTo
+} = require('./helpers/author')
+const { isLogin } = require('./helpers/login')
 
 mongoose.set('useFindAndModify', false)
 
@@ -80,38 +86,6 @@ const typeDefs = gql`
   }
 `
 
-const AuthorHelpers = {
-  findAuthor: async (name) => {
-    const authors = await Author.find({})
-    return authors.find(a =>
-      a.name === name
-    )
-  },
-  incrementBookCount: async (author) => {
-    const updatedAuthor = await Author.findOne({ name: author.name })
-    updatedAuthor.bookCount = ++author.bookCount
-
-    await updatedAuthor.save()
-    return updatedAuthor
-  },
-  createAuthor: async (name) => {
-    const author = new Author({
-      name,
-      born: null,
-      bookCount: 1,
-    })
-    await author.save()
-    return author
-  },
-  setAuthorBornTo: async (author, year) => {
-    const updatedAuthor = await Author.findOne({ name: author.name })
-    updatedAuthor.born = year
-
-    await updatedAuthor.save()
-    return updatedAuthor
-  }
-}
-
 const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments(),
@@ -139,21 +113,18 @@ const resolvers = {
     }
   },
   Mutation: {
-    addBook: async (root, args, context) => {
-      const author = await AuthorHelpers.findAuthor(args.author)
+    addBook: async (root, args, { currentUser }) => {
+      const author = await findAuthor(args.author)
       const book = new Book({ ...args })
-      const currentUser = context.currentUser
-
-      if (!currentUser) {
-        throw new AuthenticationError('not authenticated')
-      }
+      // Prevent further action if it's not login
+      isLogin(currentUser)
 
       try {
         if (author !== undefined) {
-          const existingAuthor = await AuthorHelpers.incrementBookCount(author)
+          const existingAuthor = await incrementBookCount(author)
           book.author = existingAuthor._id
         } else {
-          const newAuthor = await AuthorHelpers.createAuthor(args.author)
+          const newAuthor = await createAuthor(args.author)
           book.author = newAuthor._id
         }
 
@@ -165,18 +136,15 @@ const resolvers = {
       }
       return book
     },
-    editAuthor: async (root, args, context) => {
-      const author = await AuthorHelpers.findAuthor(args.name)
-      const currentUser = context.currentUser
-
-      if (!currentUser) {
-        throw new AuthenticationError('not authenticated')
-      }
+    editAuthor: async (root, args, { currentUser }) => {
+      const author = await findAuthor(args.name)
+    
+      // Prevent further action if it's not login
+      isLogin(currentUser)
 
       if (author === undefined) return null
 
-      const updatedAuthor = AuthorHelpers
-        .setAuthorBornTo(author, args.setBornTo)
+      const updatedAuthor = setAuthorBornTo(author, args.setBornTo)
 
       return updatedAuthor
     },
