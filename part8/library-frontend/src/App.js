@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { gql } from 'apollo-boost'
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Menu from './components/Menu'
-import { gql } from 'apollo-boost'
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
 import Login from './components/Login'
+import Recommend from './components/Recommend'
 
 const ALL_AUTHORS = gql`
   {
@@ -40,7 +41,12 @@ const CREATE_BOOK = gql`
     addBook(title: $title, author: $author, published: $published, genres: $genres) {
       title
       published
-      author
+      author {
+        name
+        id
+        born
+        bookCount
+      }
       id
       genres
     }
@@ -66,16 +72,27 @@ const LOGIN = gql`
   }
 `
 
+const ME = gql`
+  {
+    me {
+      username
+      favouriteGenre
+      id
+    }
+  }
+`
+
 const App = () => {
   const client = useApolloClient()
   const [page, setPage] = useState('authors')
   const allAuthors = useQuery(ALL_AUTHORS)
   const allBooks = useQuery(ALL_BOOKS)
+  const user = useQuery(ME)
   const [errorMessage, setErrorMessage] = useState(null)
   const [token, setToken] = useState(null)
 
   useEffect(() => {
-    const token = window.localStorage.getItem('library-user-token')
+    const token = localStorage.getItem('library-user-token')
 
     if (token) setToken(token)
   }, [])
@@ -88,7 +105,8 @@ const App = () => {
   }
 
   const [addBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    onError: handleError
   })
   const [editAuthor] = useMutation(SET_BIRTH_YEAR, {
     refetchQueries: [{ query: ALL_AUTHORS }]
@@ -140,6 +158,11 @@ const App = () => {
         handleError={handleError}
       />
 
+      <Recommend
+        show={page === 'recommend'}
+        allBooksResult={allBooks}
+        userResult={user}
+      />
     </div>
   )
 }

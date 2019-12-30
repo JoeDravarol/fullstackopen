@@ -6,6 +6,7 @@ const Menu = ({ setPage, token, logout }) => {
     return (
       <>
         <button onClick={() => setPage('add')}>add book</button>
+        <button onClick={() => setPage('recommend')}>recommend</button>
         <button onClick={logout}>logout</button>
       </>
     )

@@ -1,32 +1,15 @@
 import React, { useState } from 'react'
 import GenreButtons from './GenreButtons'
+import BookList from './BookList'
 
 const Books = ({ show, result }) => {
   const [filter, setFilter] = useState(null)
 
-  if (!show) {
-    return null
-  }
-
-  if (result.loading) {
+  if (!show || result.loading) {
     return null
   }
 
   const books = result.data.allBooks
-
-  const bookList = (books) => {
-    return (
-      <>
-        {books.map(b =>
-          <tr key={b.title}>
-            <td>{b.title}</td>
-            <td>{b.author.name}</td>
-            <td>{b.published}</td>
-          </tr>
-        )}
-      </>
-    )
-  }
 
   const filteredBooks = () => {
     const byGenre = (book) =>
@@ -44,23 +27,13 @@ const Books = ({ show, result }) => {
         : null
       }
 
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>
-              author
-            </th>
-            <th>
-              published
-            </th>
-          </tr>
-          {!filter
-            ? bookList(books)
-            : bookList( filteredBooks() )
-          }
-        </tbody>
-      </table>
+      <BookList
+        books={
+          !filter
+            ? books
+            : filteredBooks()
+        }
+      />
       <GenreButtons
         books={books}
         setFilter={setFilter}

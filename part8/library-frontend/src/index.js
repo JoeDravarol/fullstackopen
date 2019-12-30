@@ -4,8 +4,12 @@ import App from './App'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
 
+const token = localStorage.getItem('library-user-token')
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql'
+  uri: 'http://localhost:4000/graphql',
+  headers: {
+    authorization: token ? `Bearer ${token}` : ''
+  }
 })
 
 ReactDOM.render(
