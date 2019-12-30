@@ -129,12 +129,13 @@ const resolvers = {
         }
 
         await book.save()
+
+        return await book.populate('author').execPopulate()
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
       }
-      return book
     },
     editAuthor: async (root, args, { currentUser }) => {
       const author = await findAuthor(args.name)
