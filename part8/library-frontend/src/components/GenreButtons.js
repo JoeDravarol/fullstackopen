@@ -1,6 +1,6 @@
 import React from 'react'
 
-const GenreButtons = ({ books, setFilter }) => {
+const GenreButtons = ({ books, filterBooksByGenre }) => {
   const genresWithDuplicate = books.reduce((total, book) => {
     const genres = book.genres.map(g => g)
     return [...total, ...genres]
@@ -12,14 +12,14 @@ const GenreButtons = ({ books, setFilter }) => {
       {genres.map(genre =>
         <button
           key={genre}
-          onClick={() => setFilter(genre)}
+          onClick={() => filterBooksByGenre(genre)}
         >
           {genre}
         </button>
       )}
       <button
         key='all genres'
-        onClick={() => setFilter(null)}
+        onClick={() => filterBooksByGenre(null)}
       >
         all genres
         </button>

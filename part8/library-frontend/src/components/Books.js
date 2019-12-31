@@ -1,42 +1,46 @@
 import React, { useState } from 'react'
 import GenreButtons from './GenreButtons'
 import BookList from './BookList'
+import { useApolloClient } from '@apollo/react-hooks'
 
-const Books = ({ show, result }) => {
-  const [filter, setFilter] = useState(null)
+const Books = ({ show, result, allBooksQuery }) => {
+  const client = useApolloClient()
+  const [books, setBooks] = useState([])
+  const [genre, setGenre] = useState(null)
+
+  const filterBooksByGenre = async (genre) => {
+    const { data } = await client.query({
+      query: allBooksQuery,
+      variables: { genre }
+    })
+    setBooks(data.allBooks)
+    setGenre(genre)
+  }
 
   if (!show || result.loading) {
     return null
   }
 
-  const books = result.data.allBooks
-
-  const filteredBooks = () => {
-    const byGenre = (book) =>
-      book.genres.includes(filter)
-
-    return books.filter(byGenre)
-  }
+  const allBooks = result.data.allBooks
 
   return (
     <div>
       <h2>books</h2>
 
-      {filter
-        ? <p>in genre <strong>{filter}</strong></p>
+      {genre
+        ? <p>in genre <strong>{genre}</strong></p>
         : null
       }
 
       <BookList
-        books={
-          !filter
-            ? books
-            : filteredBooks()
+        books={!genre
+          ? allBooks
+          : books
         }
       />
       <GenreButtons
-        books={books}
-        setFilter={setFilter}
+        books={allBooks}
+        filterBooksByGenre={filterBooksByGenre}
       />
     </div>
   )

@@ -19,6 +19,23 @@ const ALL_AUTHORS = gql`
   }
 `
 
+const ALL_BOOKS_BY_GENRE = gql`
+  query allBooksByGenre($genre: String) {
+    allBooks(genre: $genre) {
+      title
+      published
+      author {
+        name
+        id
+        born
+        bookCount
+      }
+      id
+      genres
+    }
+  }
+`
+
 const ALL_BOOKS = gql`
   {
     allBooks {
@@ -143,6 +160,7 @@ const App = () => {
       <Books
         show={page === 'books'}
         result={allBooks}
+        allBooksQuery={ALL_BOOKS_BY_GENRE}
       />
 
       <NewBook
@@ -160,7 +178,7 @@ const App = () => {
 
       <Recommend
         show={page === 'recommend'}
-        allBooksResult={allBooks}
+        allBooksQuery={ALL_BOOKS_BY_GENRE}
         userResult={user}
       />
     </div>
