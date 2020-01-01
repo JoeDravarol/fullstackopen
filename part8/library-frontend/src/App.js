@@ -127,10 +127,36 @@ const App = () => {
     }, 10000)
   }
 
-  const [addBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
-    onError: handleError
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) =>
+      set.map(b => b.id).includes(object.id)
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      dataInStore.allBooks.push(addedBook)
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: dataInStore
+      })
+    }
+  }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      notify(`${addedBook.title} added`)
+      updateCacheWith(addedBook)
+    }
   })
+
+  const [addBook] = useMutation(CREATE_BOOK, {
+    refetchQueries: [{ query: ALL_AUTHORS }],
+    onError: handleError,
+    update: (store, response) => {
+      updateCacheWith(response.data.addBook)
+    }
+  })
+
   const [editAuthor] = useMutation(SET_BIRTH_YEAR, {
     refetchQueries: [{ query: ALL_AUTHORS }]
   })
@@ -143,13 +169,6 @@ const App = () => {
     localStorage.clear()
     client.resetStore()
   }
-
-  useSubscription(BOOK_ADDED, {
-    onSubscriptionData: ({ subscriptionData }) => {
-      const addedBook = subscriptionData.data.bookAdded
-      notify(`${addedBook.title} added`)
-    }
-  })
 
   return (
     <div>
