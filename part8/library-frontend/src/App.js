@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { gql } from 'apollo-boost'
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
+import { useQuery, useMutation, useApolloClient, useSubscription } from '@apollo/react-hooks'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
@@ -8,6 +8,20 @@ import Menu from './components/Menu'
 import Login from './components/Login'
 import Recommend from './components/Recommend'
 
+const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    title
+    published
+    id
+    genres
+    author {
+      name
+      id
+      born
+      bookCount
+    }
+  }
+`
 const ALL_AUTHORS = gql`
   {
     allAuthors {
@@ -22,52 +36,28 @@ const ALL_AUTHORS = gql`
 const ALL_BOOKS_BY_GENRE = gql`
   query allBooksByGenre($genre: String) {
     allBooks(genre: $genre) {
-      title
-      published
-      author {
-        name
-        id
-        born
-        bookCount
-      }
-      id
-      genres
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
 const ALL_BOOKS = gql`
   {
     allBooks {
-      title
-      published
-      author {
-        name
-        id
-        born
-        bookCount
-      }
-      id
-      genres
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
 const CREATE_BOOK = gql`
   mutation createBook($title: String!, $author: String!, $published: Int, $genres: [String!]!) {
     addBook(title: $title, author: $author, published: $published, genres: $genres) {
-      title
-      published
-      author {
-        name
-        id
-        born
-        bookCount
-      }
-      id
-      genres
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
 const SET_BIRTH_YEAR = gql`
@@ -99,6 +89,15 @@ const ME = gql`
   }
 `
 
+const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
+`
+
 const App = () => {
   const client = useApolloClient()
   const [page, setPage] = useState('authors')
@@ -121,6 +120,13 @@ const App = () => {
     }, 10000)
   }
 
+  const notify = (message) => {
+    setErrorMessage(message)
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 10000)
+  }
+
   const [addBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onError: handleError
@@ -137,6 +143,13 @@ const App = () => {
     localStorage.clear()
     client.resetStore()
   }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      notify(`${addedBook.title} added`)
+    }
+  })
 
   return (
     <div>
