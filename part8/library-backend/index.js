@@ -111,10 +111,8 @@ const resolvers = {
   },
   Author: {
     bookCount: async (root) => {
-      const books = await Book.find({})
-      return books.reduce((total, book) =>
-        String(book.author) === root.id ? ++total : total, 0
-      )
+      const books = await Book.find({ author: { $eq: root.id } })
+      return books.length
     }
   },
   Mutation: {
@@ -140,7 +138,7 @@ const resolvers = {
           invalidArgs: args,
         })
       }
-      
+
       pubsub.publish('BOOK_ADDED', { bookAdded: book })
       return book
     },
