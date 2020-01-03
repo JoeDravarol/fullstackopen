@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { gql } from 'apollo-boost'
 import { useQuery, useMutation, useApolloClient, useSubscription } from '@apollo/react-hooks'
+
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
@@ -8,95 +8,13 @@ import Menu from './components/Menu'
 import Login from './components/Login'
 import Recommend from './components/Recommend'
 
-const BOOK_DETAILS = gql`
-  fragment BookDetails on Book {
-    title
-    published
-    id
-    genres
-    author {
-      name
-      id
-      born
-      bookCount
-    }
-  }
-`
-const ALL_AUTHORS = gql`
-  {
-    allAuthors {
-      name
-      id
-      born
-      bookCount
-    }
-  }
-`
-
-const ALL_BOOKS_BY_GENRE = gql`
-  query allBooksByGenre($genre: String) {
-    allBooks(genre: $genre) {
-      ...BookDetails
-    }
-  }
-  ${BOOK_DETAILS}
-`
-
-const ALL_BOOKS = gql`
-  {
-    allBooks {
-      ...BookDetails
-    }
-  }
-  ${BOOK_DETAILS}
-`
-
-const CREATE_BOOK = gql`
-  mutation createBook($title: String!, $author: String!, $published: Int, $genres: [String!]!) {
-    addBook(title: $title, author: $author, published: $published, genres: $genres) {
-      ...BookDetails
-    }
-  }
-  ${BOOK_DETAILS}
-`
-
-const SET_BIRTH_YEAR = gql`
-  mutation setBirthYear($name: String!, $setBornTo: Int!) {
-    editAuthor(name: $name, setBornTo: $setBornTo) {
-      name
-      id
-      born
-      bookCount
-    }
-  }
-`
-
-const LOGIN = gql`
-  mutation login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      value
-    }
-  }
-`
-
-const ME = gql`
-  {
-    me {
-      username
-      favouriteGenre
-      id
-    }
-  }
-`
-
-const BOOK_ADDED = gql`
-  subscription {
-    bookAdded {
-      ...BookDetails
-    }
-  }
-  ${BOOK_DETAILS}
-`
+import ALL_AUTHORS from './graphql/queries/allAuthors'
+import ALL_BOOKS from './graphql/queries/allBooks'
+import ME from './graphql/queries/userProfile'
+import BOOK_ADDED from './graphql/subscriptions/bookAdded'
+import CREATE_BOOK from './graphql/mutations/createBook'
+import SET_BIRTH_YEAR from './graphql/mutations/setAuthorBirthYear'
+import LOGIN from './graphql/mutations/login'
 
 const App = () => {
   const client = useApolloClient()
@@ -192,7 +110,6 @@ const App = () => {
       <Books
         show={page === 'books'}
         result={allBooks}
-        allBooksQuery={ALL_BOOKS_BY_GENRE}
       />
 
       <NewBook
@@ -210,7 +127,6 @@ const App = () => {
 
       <Recommend
         show={page === 'recommend'}
-        allBooksQuery={ALL_BOOKS_BY_GENRE}
         userResult={user}
       />
     </div>

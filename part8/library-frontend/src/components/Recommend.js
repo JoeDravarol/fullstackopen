@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import BookList from './BookList'
 import { useApolloClient } from '@apollo/react-hooks'
+import ALL_BOOKS_BY_GENRE from '../graphql/queries/allBooksByGenre'
 
-const Recommend = ({ show, allBooksQuery, userResult }) => {
+const Recommend = ({ show, userResult }) => {
   const client = useApolloClient()
   const [books, setBooks] = useState([])
 
@@ -13,7 +14,7 @@ const Recommend = ({ show, allBooksQuery, userResult }) => {
   const user = userResult.data.me
 
   client.query({
-    query: allBooksQuery,
+    query: ALL_BOOKS_BY_GENRE ,
     variables: { genre: user.favouriteGenre }
   }).then(result => {
     setBooks(result.data.allBooks)
